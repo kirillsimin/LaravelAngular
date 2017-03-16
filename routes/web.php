@@ -14,3 +14,5 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::post('/collect', ['middleware' => 'web', 'uses' => 'GoFanController@collect', 'as' => 'gofan.collect']);
