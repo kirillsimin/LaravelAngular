@@ -15,10 +15,9 @@ formApp.controller('formController', function($scope, $http) {
     $scope.message = {};
 
     /*
-    * Submit review
+    * Validate Form
     ********************************************************************************/
     $scope.validateForm = function() {
-        console.log($scope.newReview.text);
         if ($scope.newReview.text !== undefined) {
             $scope.submitReview();
         } else {
@@ -42,6 +41,7 @@ formApp.controller('formController', function($scope, $http) {
                 $scope.message.text = response.data.message;
                 $scope.loadReviews();
             } else {
+                console.log(response.data.message);
                 $scope.message.text = "Whoops... Something went wrong.";
             }
         });
