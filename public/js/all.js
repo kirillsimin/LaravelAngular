@@ -1,24 +1,63 @@
-var formApp = angular.module('formApp', []);
-    function formController($scope, $http) {
-        $scope.formData = {};
-        $scope.processForm = function() {
+/*
+* Init Angular
+*
+********************************************************************************/
+var formApp = angular.module('formApp', [], function($interpolateProvider) {
+        $interpolateProvider.startSymbol('<%');
+        $interpolateProvider.endSymbol('%>');
+    });
+
+/*
+* Form Controller
+********************************************************************************/
+formApp.controller('formController', function($scope, $http) {
+    $scope.newReview = {};
+    $scope.message = {};
+
+    /*
+    * Submit review
+    ********************************************************************************/
+    $scope.validateForm = function() {
+        console.log($scope.newReview.text);
+        if ($scope.newReview.text !== undefined) {
+            $scope.submitReview();
+        } else {
+            $scope.message.text = "Say something...";
+        }
+    }
+
+    /*
+    * Submit review
+    ********************************************************************************/
+    $scope.submitReview = function() {
         $http({
             method  : 'POST',
-            url     : '/collect',
-            data    : $.param($scope.formData),  // pass in data as strings
-            headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+            url     : '/store',
+            params  : $scope.newReview,
+            headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
         })
-            .success(function(data) {
-                console.log(data);
-                if (!data.success) {
-                    // if not successful, bind errors to error variables
-                    $scope.errorName = data.errors.name;
-                    $scope.errorSuperhero = data.errors.superheroAlias;
-                } else {
-                    // if successful, bind success message to message
-                    $scope.message = data.message;
-                }
-          });
-        };
-    }
+        .then(function(response) {
+            if (response.data.success == true) {
+                $scope.newReview.text = "";
+                $scope.message.text = response.data.message;
+                $scope.loadReviews();
+            } else {
+                $scope.message.text = "Whoops... Something went wrong.";
+            }
+        });
+    };
+
+    /*
+    * Load reviews
+    ********************************************************************************/
+    $scope.loadReviews = function() {
+        $http({
+            method  : 'GET',
+            url     : '/display',
+        })
+        .then(function(data) {
+            $scope.reviews = data.data;
+        });
+    };
+});
 //# sourceMappingURL=all.js.map

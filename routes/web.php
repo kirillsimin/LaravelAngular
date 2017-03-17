@@ -11,8 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['middleware' => 'web'], function () {
+    Route::get('/', ['uses' => 'ReviewController@index', 'as' => 'review.index']);
+    Route::get('/display', ['uses' => 'ReviewController@display', 'as' => 'review.display']);
+    Route::post('/store', ['uses' => 'ReviewController@store', 'as' => 'review.collect']);
 });
-
-Route::post('/collect', ['middleware' => 'web', 'uses' => 'GoFanController@collect', 'as' => 'gofan.collect']);
