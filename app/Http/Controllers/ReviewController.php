@@ -36,6 +36,10 @@ class ReviewController extends Controller
         }
     }
 
+    /**
+    * Display all reviews
+    * @return Json
+    */
     public function display()
     {
         return Review::display();
